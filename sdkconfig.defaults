@@ -1,0 +1,47 @@
+# Target
+CONFIG_IDF_TARGET="esp32c6"
+
+# Flash size (Waveshare ESP32-C6-LCD-1.47 has 8MB embedded flash)
+CONFIG_ESPTOOLPY_FLASHSIZE_8MB=y
+CONFIG_ESPTOOLPY_FLASHSIZE="8MB"
+
+# Custom partition table for Zigbee NVS storage
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+CONFIG_PARTITION_TABLE_FILENAME="partitions.csv"
+
+# FreeRTOS tick at 1kHz (Zigbee stack prefers this)
+CONFIG_FREERTOS_HZ=1000
+
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=4096
+CONFIG_LOG_DEFAULT_LEVEL_INFO=y
+CONFIG_LOG_DEFAULT_LEVEL=3
+
+# Zigbee (esp-zigbee-sdk)
+CONFIG_ZB_ENABLED=y
+CONFIG_ZB_ZCZR=y                         # Coordinator (also routes)
+CONFIG_ZB_RADIO_NATIVE=y                 # Use C6's native 802.15.4 radio
+CONFIG_ZB_NVRAM_ERASE_AT_START=n
+
+# 802.15.4 radio
+CONFIG_IEEE802154_ENABLED=y
+
+# LCD
+CONFIG_SPI_MASTER_IN_IRAM=y
+
+# LVGL fonts (Montserrat) for the dashboard UI
+CONFIG_LV_FONT_MONTSERRAT_14=y
+CONFIG_LV_FONT_MONTSERRAT_16=y
+CONFIG_LV_FONT_MONTSERRAT_20=y
+CONFIG_LV_FONT_MONTSERRAT_28=y
+
+# Wi-Fi STA + Zigbee single-chip coexistence.
+# The single 2.4 GHz radio is time-shared between Wi-Fi and 802.15.4 by the
+# coex arbiter, which is driven by the PM/modem-sleep framework. Without
+# PM_ENABLE the coordinator's always-on 802.15.4 RX starves Wi-Fi of receive
+# windows -> beacon timeout (disconnect reason 200). Runtime must also call
+# esp_coex_wifi_i154_enable() + esp_wifi_set_ps(WIFI_PS_MIN_MODEM).
+CONFIG_ESP_COEX_SW_COEXIST_ENABLE=y
+CONFIG_ESP_COEX_POWER_MANAGEMENT=y
+CONFIG_PM_ENABLE=y
+CONFIG_ESP_WIFI_STA_DISCONNECTED_PM_ENABLE=y
